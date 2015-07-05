@@ -1,0 +1,30 @@
+.explore
+  canvas
+    width 100% !important
+    height 15rem !important
+  .date-range
+    text-align right
+    margin-bottom 1rem
+    input:first-child
+      margin-right 1rem
+  .data-dimensions
+    margin-top 1rem
+    display flex
+    justify-content space-between
+    .dimension-wrapper
+      display inline-block
+      display flex
+      justify-content space-between
+      &:before
+        content ''
+        border-radius 50%
+        display block
+        width 1rem
+        height 1rem
+        margin-right .5rem
+      &:nth-child(1):before
+        background colors-dimension1
+      &:nth-child(2):before
+        background colors-dimension2
+      &:nth-child(3):before
+        background colors-dimension3

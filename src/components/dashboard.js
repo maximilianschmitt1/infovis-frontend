@@ -66,7 +66,7 @@ class Dashboard extends React.Component {
     }
 
     return (
-      <div className="dashboard">
+      <div className="dashboard constrain-width">
         <h1>Dashboard</h1>
         <h2>Overview</h2>
         <section className="overview">

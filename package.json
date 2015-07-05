@@ -10,14 +10,20 @@
     "gulp-jade": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.0.5",
+    "stylus-vars": "0.0.3",
     "watchify": "^3.2.3"
   },
   "dependencies": {
     "axios": "^0.5.4",
+    "chart.js": "^1.0.2",
+    "debounce": "^1.0.0",
+    "deep-equal": "^1.0.0",
     "moment": "^2.10.3",
     "normalize.css": "^3.0.3",
     "react": "^0.13.3",
+    "react-chartjs": "^0.6.0",
     "react-document-title": "^1.0.2",
-    "react-router": "^0.13.3"
+    "react-router": "^0.13.3",
+    "react-select": "^0.5.2"
   }
 }

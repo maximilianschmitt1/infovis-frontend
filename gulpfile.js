@@ -6,6 +6,8 @@ const watchify = require('watchify');
 const jade = require('gulp-jade');
 const stylus = require('gulp-stylus');
 const rename = require('gulp-rename');
+const stylusVars = require('stylus-vars');
+const vars = require('./src/vars');
 const fs = require('fs');
 
 gulp.task('templates', function() {
@@ -18,7 +20,7 @@ gulp.task('templates', function() {
 gulp.task('styles', function() {
   return gulp
     .src('src/main.styl')
-    .pipe(stylus({ 'include css': true }))
+    .pipe(stylus({ 'include css': true, use: [stylusVars(vars, { delimiter: '-' })] }))
     .pipe(rename('app.css'))
     .pipe(gulp.dest('dist'));
 });
