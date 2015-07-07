@@ -70,16 +70,20 @@ class Explore extends React.Component {
       const options = (i === 0 ? dataOptions.slice(1) : dataOptions)
         .map((option, i) => <option key={i} value={option.value}>{option.label}</option>);
 
-      const dataInfo = !loading && counts && counts[i] && (function() {
+      const dataInfo = (function() {
+        if (loading || !counts || !counts[i]) {
+          return <div className="mini-stats"><p>&nbsp;</p></div>;
+        }
+
         const total = counts[i].data.map(dp => dp[dimensionKey]).reduce((dp1, dp2) => dp1 + dp2, 0);
         const num = counts[i].data.length;
         const average = Math.round(total / num);
         const units = resolution;
         const unit = resolution.substr(0, resolution.length - 1);
+
         return (
           <div className="mini-stats">
-            <p><strong>{formatNumber(total)}</strong> over <strong>{num} {units}</strong></p>
-            <p><strong>~{formatNumber(average)}</strong> per <strong>{unit}</strong></p>
+            <p><strong>{formatNumber(total)}</strong> over <strong>{num} {units}</strong>, <strong>~{formatNumber(average)}</strong> / <strong>{unit}</strong></p>
           </div>
         );
       })();
@@ -100,17 +104,8 @@ class Explore extends React.Component {
 
     return (
       <div className="explore">
-        <h1>Explore</h1>
-
-        <nav className="date-range">
-          <DateRangePicker
-            start={startTime}
-            end={endTime}
-            onChange={this.onChangeDateRange}
-            max="2015-04-22"
-            min="2015-02-21"
-            resolution="days"
-            />
+        <nav className="data-dimensions toolbar">
+          {selects}
         </nav>
 
         <div className="chart-container">
@@ -124,9 +119,17 @@ class Explore extends React.Component {
             />
         </div>
 
-        <nav className="data-dimensions toolbar">
-          {selects}
+        <nav className="date-range">
+          <DateRangePicker
+            start={startTime}
+            end={endTime}
+            onChange={this.onChangeDateRange}
+            max="2015-04-22"
+            min="2015-02-21"
+            resolution="days"
+            />
         </nav>
+
       </div>
     );
   }

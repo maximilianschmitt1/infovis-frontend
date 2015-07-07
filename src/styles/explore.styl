@@ -1,11 +1,19 @@
 .explore
+  header
+    display flex
+    justify-content space-between
+    align-items center
+    margin-bottom 2rem
+    h1
+      margin 0
+      padding 0
   canvas
     width 100% !important
     height 20rem !important
 
   .date-range
+    margin-top 2rem
     text-align right
-    margin-bottom 1rem
     input:first-child
       margin-right 1rem
 
@@ -29,9 +37,13 @@
       opacity .6
 
   .data-dimensions
-    margin-top 1rem
+    margin 2rem 0
     display flex
-    justify-content space-between
+    justify-content flex-start
+    .dimensions-container
+      margin-right 1rem
+    .dimensions-container:last-child
+      margin-right 0
     .select-container
       display flex
       justify-content space-between
@@ -54,7 +66,7 @@
 
     .mini-stats
       margin-left 1.5rem
-      font-size .85rem
+      font-size .8rem
       margin-top .5rem
       line-height 1.6
       color #999
