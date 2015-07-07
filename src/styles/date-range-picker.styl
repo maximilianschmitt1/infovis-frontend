@@ -25,6 +25,10 @@
       background #FFF2C9
     &.selected
       background #ccc
+    &.in-range
+      background lighten(#66a0ed, 80%)
+    &.in-range.weekend
+      background lighten(#66a0ed, 60%)
     &.in-range:before
       content ''
       display block
@@ -33,7 +37,7 @@
       right 0
       bottom 0
       left 0
-      border 0 solid #333
+      border 0 solid #66a0ed
     &.range-start:before
       border-left-width 2px
     &.range-end:before

@@ -29,7 +29,6 @@ class DateRangePicker extends React.Component {
 
   startSelection(date) {
     this.setState({ selectionStart: date });
-    console.log('start', date.format('YYYY-MM-DD'));
   }
 
   endSelection(date) {

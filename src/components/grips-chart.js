@@ -102,7 +102,7 @@ function makeLabels(startTime, endTime, resolution) {
   const start = moment(startTime);
   const end = moment(endTime);
 
-  return array(end.diff(start, resolution))
+  return array(end.clone().add(1, 'days').diff(start, resolution))
     .map((we, i) => start.clone().add(i, resolution).format(formats[resolution]));
 }
 

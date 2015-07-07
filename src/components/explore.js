@@ -23,7 +23,6 @@ class Explore extends React.Component {
       loading: true,
       startTime: '2015-03-01',
       endTime: '2015-03-15',
-      resolution: 'days',
       dimensions: ['hits', null, null]
     };
 
@@ -37,13 +36,14 @@ class Explore extends React.Component {
   }
 
   onZoom(num) {
-    const startTime = moment(this.state.startTime).clone().add(num, this.state.resolution).format('YYYY-MM-DD');
-    const endTime = moment(startTime).add(1, this.state.resolution).format('YYYY-MM-DD');
-    this.setState({ loading: true, resolution: 'hours', startTime, endTime }, this.fetchCounts);
+    const startTime = moment(this.state.startTime).clone().add(num, 'days').format('YYYY-MM-DD');
+    const endTime = startTime;
+    this.setState({ loading: true, startTime, endTime }, this.fetchCounts);
   }
 
   fetchCounts() {
-    const opts = { startTime: this.state.startTime, endTime: this.state.endTime, resolution: this.state.resolution };
+    const opts = { startTime: this.state.startTime, endTime: this.state.endTime };
+    opts.resolution = moment(this.state.endTime).diff(this.state.startTime, 'days') > 0 ? 'days' : 'hours';
     return Promise
       .all(this.state.dimensions.map(dimension => dimension && counts.get(dimension, opts)))
       .then(counts => this.setState({ loading: false, counts }));
@@ -61,7 +61,8 @@ class Explore extends React.Component {
   }
 
   render() {
-    const { startTime, endTime, dimensions, counts, loading, resolution } = this.state;
+    const { startTime, endTime, dimensions, counts, loading } = this.state;
+    const resolution = moment(endTime).diff(startTime, 'days') > 0 ? 'days' : 'hours';
 
     const selects = dimensions.map((dimensionKey, i) => {
       const changeFunction = this.onChangeDimension.bind(this, i);
