@@ -1,107 +1,109 @@
 'use strict';
 
 const React = require('react');
-const Chart = require('react-chartjs').Bar;
-const apiUrl = require('../config').apiUrl;
+const Chart = require('react-chartjs').Line;
 const moment = require('moment');
-const axios = require('axios');
+const array = require('new-array');
+const equal = require('deep-equal');
+const color = require('color');
 const colors = require('../vars').colors;
 
-const dimensionNames = ['dimension1', 'dimension2', 'dimension3'];
-
 class GripsChart extends React.Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
+  componentDidUpdate() {
+    if (this.mounted) {
+      return;
+    }
 
-  componentDidMount() {
-    this.fetch(this.props);
-  }
+    const canvas = this.refs.chart.getCanvass();
 
-  componentWillReceiveProps(props) {
-    this.fetch(props);
-  }
+    canvas.onmousemove = (e) => {
+      const chart = this.refs.chart.getChart();
+      const points = chart.getPointsAtEvent(e);
 
-  shouldComponentUpdate(props, state) {
-    let loading = false;
-
-    dimensionNames.forEach(dimensionName => {
-      if (state[dimensionName] && state[dimensionName].loading) {
-        loading = true;
-      }
-    });
-
-    return !loading;
-  }
-
-  fetch(opts) {
-    ['dimension1', 'dimension2', 'dimension3'].forEach(dimensionName => {
-      if (!opts[dimensionName]) {
-        const state = {};
-        state[dimensionName] = null;
-        return this.setState(state);
+      if (this.props.resolution !== 'days' || !points.length) {
+        canvas.style.cursor = 'default';
+        return;
       }
 
-      const state = {};
-      state[dimensionName] = { loading: true };
-      this.setState(state);
+      canvas.style.cursor = 'pointer';
+    };
 
-      this.getData(opts[dimensionName], opts).then(updateState.bind(this));
-
-      function updateState(res) {
-        const state = {};
-        state[dimensionName] = { dimensionName, dimension: opts[dimensionName], data: res.data, loading: false };
-        this.setState(state);
+    canvas.onclick = (e) => {
+      if (this.props.resolution !== 'days') {
+        return;
       }
-    });
+
+      const chart = this.refs.chart.getChart();
+      const points = chart.getPointsAtEvent(e);
+
+      if (!points.length) {
+        return;
+      }
+
+      if (this.props.resolution === 'days') {
+        const num = makeLabels(this.props.startTime, this.props.endTime, this.props.resolution).indexOf(points[0].label);
+        this.zoom(num);
+      }
+    };
+
+    this.mounted = true;
   }
 
-  getData(dimension, opts) {
-    const { startTime, endTime, resolution } = opts;
-    return axios.get(apiUrl + `/count/${dimension}/between/${startTime}/${endTime}?resolution=${resolution}`);
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props.dimensions, nextProps.dimensions);
+  }
+
+  zoom(num) {
+    this.props.onZoom(num);
   }
 
   render() {
-    const chart = (function() {
-      const datasets = dimensionNames
-        .filter(dimensionName => !!this.state[dimensionName])
-        .map(dimension => {
-          const what = this.state[dimension];
-          what.fillColor = colors[what.dimensionName];
-          what.label = what.dimension;
-          return what;
-        });
+    const { startTime, endTime, resolution, dimensions } = this.props;
 
-      if (!datasets[0] || this.state.loading) {
-        return null;
-      }
+    if (!dimensions) {
+      return null;
+    }
 
-      const chartData = {
-        labels: datasets[0].data.map(dp => label(this.props.resolution, dp.time)),
-        datasets: datasets.map(dataset => {
-          dataset.data = dataset.data.map(dp => dp[dataset.label]);
-          return dataset;
-        })
-      };
+    const datasets = dimensions.map(dataset).filter(dataset => !!dataset);
+    const labels = makeLabels(startTime, endTime, resolution);
 
-      return <Chart redraw data={chartData} height="400" />;
-    }.bind(this))();
+    return (
+      <Chart
+        ref="chart"
+        redraw
+        data={{ datasets, labels }}
+        options={{ animation: false, multiTooltipTemplate: '<%= datasetLabel %>: <%= value %>' }}
+        />
+    );
 
-    return <div className="chart">{chart}</div>;
   }
 }
 
-function label(resolution, time) {
-  if (resolution === 'hours') {
-    return moment(time).format('HH');
+function dataset(dimension, i) {
+  if (!dimension) {
+    return null;
   }
 
-  if (resolution === 'minutes') {
-    return moment(time).format('mm');
-  }
+  const baseColor = colors['dimension' + (i + 1)];
 
-  return moment(time).format('MMMM Do');
+  return {
+    data: dimension.data.map(dp => dp[dimension.dimension]),
+    label: dimension.dimension,
+    fillColor: color(baseColor).clearer(.75).rgbString(),
+    pointColor: baseColor,
+    strokeColor: baseColor,
+    pointStrokeColor: baseColor,
+    pointHighlightFill: '#fff'
+  };
+}
+
+function makeLabels(startTime, endTime, resolution) {
+  const formats = { hours: 'HH:mm', minutes: 'mm', days: 'MMMM Do' };
+  const start = moment(startTime);
+  const end = moment(endTime);
+
+  return array(end.diff(start, resolution))
+    .map((we, i) => start.clone().add(i, resolution).format(formats[resolution]));
 }
 
 module.exports = GripsChart;

@@ -1,0 +1,52 @@
+.date-range-picker
+  table
+    width 100%
+    border-collapse collapse
+
+  td
+    text-align center
+
+  td.month
+    padding .125rem
+    border-right 2px solid #fff
+    background rgba(0, 0, 0, .125)
+    border-bottom .25rem solid #fff
+    font-size .6rem
+    &:last-child
+      border-right 0
+    &:nth-child(odd)
+      background rgba(0, 0, 0, .0525)
+
+  td.day, td.weekday
+    position relative
+    padding .25rem .125rem
+    -webkit-user-select none
+    &.weekend
+      background #FFF2C9
+    &.selected
+      background #ccc
+    &.in-range:before
+      content ''
+      display block
+      position absolute
+      top 0
+      right 0
+      bottom 0
+      left 0
+      border 0 solid #333
+    &.range-start:before
+      border-left-width 2px
+    &.range-end:before
+      border-right-width 2px
+  td.weekday.in-range:before
+    border-top-width 2px
+  td.day.in-range:before
+    border-bottom-width 2px
+
+  td.day
+    font-size .8rem
+
+  td.weekday
+    padding .25rem .125rem
+    font-size .6rem
+    text-transform uppercase

@@ -1,18 +1,38 @@
 .explore
   canvas
     width 100% !important
-    height 15rem !important
+    height 20rem !important
+
   .date-range
     text-align right
     margin-bottom 1rem
     input:first-child
       margin-right 1rem
+
+  .chart-container
+    position relative
+    height 20rem
+
+  .loading-indicator
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    z-index 100
+    background rgba(255, 255, 255, .5)
+    display flex
+    justify-content center
+    &:before
+      align-self center
+      content url('/loading-indicator.gif')
+      opacity .6
+
   .data-dimensions
     margin-top 1rem
     display flex
     justify-content space-between
-    .dimension-wrapper
-      display inline-block
+    .select-container
       display flex
       justify-content space-between
       &:before
@@ -22,9 +42,22 @@
         width 1rem
         height 1rem
         margin-right .5rem
-      &:nth-child(1):before
-        background colors-dimension1
-      &:nth-child(2):before
-        background colors-dimension2
-      &:nth-child(3):before
-        background colors-dimension3
+      select
+        font-size 1rem
+
+    .dimensions-container:nth-child(1) .select-container:before
+      background colors-dimension1
+    .dimensions-container:nth-child(2) .select-container:before
+      background colors-dimension2
+    .dimensions-container:nth-child(3) .select-container:before
+      background colors-dimension3
+
+    .mini-stats
+      margin-left 1.5rem
+      font-size .85rem
+      margin-top .5rem
+      line-height 1.6
+      color #999
+      strong
+        font-weight normal
+        color black

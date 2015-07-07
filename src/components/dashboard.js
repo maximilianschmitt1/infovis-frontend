@@ -43,11 +43,11 @@ class Dashboard extends React.Component {
   render() {
     const dataPoints = this.state.dataPoints.map(dataPoint);
 
-    const faculties = this.state.faculties.map(function(faculty) {
+    const faculties = this.state.faculties.map(function(faculty, i) {
       const dataPoints = faculty.dataPoints.map(dataPoint);
 
       return (
-        <div className="faculty">
+        <div key={i} className="faculty">
           <div className="name">{faculty.name}</div>
           <div className="data-points">
             {dataPoints}
@@ -56,9 +56,9 @@ class Dashboard extends React.Component {
       );
     });
 
-    function dataPoint(point) {
+    function dataPoint(point, i) {
       return (
-        <div className="data-point">
+        <div key={i} className="data-point">
           <div className="value">{point.value}</div>
           <div className="description">{point.description}</div>
         </div>

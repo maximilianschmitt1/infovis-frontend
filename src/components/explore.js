@@ -1,96 +1,130 @@
 'use strict';
 
+const debounce = require('debounce');
+const moment = require('moment');
 const React = require('react');
 const GripsChart = require('./grips-chart');
-const dataDimensions = require('../data/data-dimensions.json').sort();
-const debounce = require('debounce');
+const DateRangePicker = require('./date-range-picker');
+const actions = require('../data/data-dimensions.json').sort();
+const formatNumber = require('format-number')();
+const counts = require('../stores/counts');
 
 const dataOptions = [
   { value: 'none', label: '-' },
   { value: 'hits', label: 'Hits' },
   { value: 'uniques', label: 'Uniques' }
-].concat(dataDimensions.map(dimension => { return { value: dimension, label: dimension }; }));
+].concat(actions.map(action => { return { value: action, label: action }; }));
 
 class Explore extends React.Component {
   constructor() {
     super();
 
     this.state = {
+      loading: true,
       startTime: '2015-03-01',
       endTime: '2015-03-15',
-      dataDimension1: 'hits',
-      dataDimension2: null,
-      dataDimension3: null
+      resolution: 'days',
+      dimensions: ['hits', null, null]
     };
 
-    this.onChangeStartTime = this.onChangeStartTime.bind(this);
-    this.onChangeEndTime = this.onChangeEndTime.bind(this);
+    this.onChangeDateRange = this.onChangeDateRange.bind(this);
+    this.onZoom = this.onZoom.bind(this);
+    this.fetchCounts = debounce(this.fetchCounts, 200).bind(this);
   }
 
-  onChangeStartTime(e) {
-    const startTime = e.target.value;
-    this.setState({ startTime });
+  componentDidMount() {
+    this.fetchCounts();
   }
 
-  onChangeEndTime(e) {
-    const endTime = e.target.value;
-    this.setState({ endTime });
+  onZoom(num) {
+    const startTime = moment(this.state.startTime).clone().add(num, this.state.resolution).format('YYYY-MM-DD');
+    const endTime = moment(startTime).add(1, this.state.resolution).format('YYYY-MM-DD');
+    this.setState({ loading: true, resolution: 'hours', startTime, endTime }, this.fetchCounts);
   }
 
-  onChangeDataDimension1(e) {
-    this.setState({ dataDimension1: e.target.value });
+  fetchCounts() {
+    const opts = { startTime: this.state.startTime, endTime: this.state.endTime, resolution: this.state.resolution };
+    return Promise
+      .all(this.state.dimensions.map(dimension => dimension && counts.get(dimension, opts)))
+      .then(counts => this.setState({ loading: false, counts }));
   }
 
-  onChangeDataDimension2(e) {
+  onChangeDateRange(range) {
+    this.setState({ startTime: range.start, endTime: range.end, loading: true }, this.fetchCounts);
+  }
+
+  onChangeDimension(num, e) {
+    const dimensions = this.state.dimensions;
     const value = e.target.value;
-    this.setState({ dataDimension2: value === 'none' ? null : value });
-  }
-
-  onChangeDataDimension3(e) {
-    const value = e.target.value;
-    this.setState({ dataDimension3: value === 'none' ? null : value });
+    dimensions[num] = value === 'none' ? null : value;
+    this.setState({ dimensions, loading: true }, this.fetchCounts);
   }
 
   render() {
-    const { startTime, endTime, dataDimension1, dataDimension2, dataDimension3 } = this.state;
+    const { startTime, endTime, dimensions, counts, loading, resolution } = this.state;
 
-    const dataSelects = [null, null, null].map((val, i) => {
-      const value = this.state['dataDimension' + (i + 1)];
-      const changeFunction = this['onChangeDataDimension' + (i + 1)].bind(this);
-      const options = dataOptions.map(function(option, i) {
-        return <option key={i} value={option.value}>{option.label}</option>;
-      });
+    const selects = dimensions.map((dimensionKey, i) => {
+      const changeFunction = this.onChangeDimension.bind(this, i);
 
-      if (i === 0) {
-        options.shift();
-      }
+      const options = (i === 0 ? dataOptions.slice(1) : dataOptions)
+        .map((option, i) => <option key={i} value={option.value}>{option.label}</option>);
+
+      const dataInfo = !loading && counts && counts[i] && (function() {
+        const total = counts[i].data.map(dp => dp[dimensionKey]).reduce((dp1, dp2) => dp1 + dp2, 0);
+        const num = counts[i].data.length;
+        const average = Math.round(total / num);
+        const units = resolution;
+        const unit = resolution.substr(0, resolution.length - 1);
+        return (
+          <div className="mini-stats">
+            <p><strong>{formatNumber(total)}</strong> over <strong>{num} {units}</strong></p>
+            <p><strong>~{formatNumber(average)}</strong> per <strong>{unit}</strong></p>
+          </div>
+        );
+      })();
 
       return (
-        <div className="dimension-wrapper">
-          <select key={i} onChange={changeFunction} value={value}>
-            {options}
-          </select>
+        <div key={i} className="dimensions-container">
+          <div className="select-container">
+            <select onChange={changeFunction} value={dimensionKey}>
+              {options}
+            </select>
+          </div>
+          {dataInfo}
         </div>
       );
     });
+
+    const loadingIndicator = loading ? <div className="loading-indicator" /> : null;
+
     return (
       <div className="explore">
         <h1>Explore</h1>
+
         <nav className="date-range">
-          <input type="date" ref="start-time" value={startTime} onChange={this.onChangeStartTime} />
-          <input type="date" ref="end-time" value={endTime} onChange={this.onChangeEndTime} />
+          <DateRangePicker
+            start={startTime}
+            end={endTime}
+            onChange={this.onChangeDateRange}
+            max="2015-04-21"
+            min="2015-02-21"
+            resolution="days"
+            />
         </nav>
 
-        <GripsChart
-          startTime={startTime}
-          endTime={endTime}
-          dimension1={dataDimension1}
-          dimension2={dataDimension2}
-          dimension3={dataDimension3}
-          resolution="days"
-          what="hits" />
+        <div className="chart-container">
+          {loadingIndicator}
+          <GripsChart
+            onZoom={this.onZoom}
+            startTime={startTime}
+            endTime={endTime}
+            dimensions={counts}
+            resolution={resolution}
+            />
+        </div>
+
         <nav className="data-dimensions toolbar">
-          {dataSelects}
+          {selects}
         </nav>
       </div>
     );
