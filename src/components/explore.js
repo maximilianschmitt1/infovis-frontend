@@ -107,7 +107,7 @@ class Explore extends React.Component {
             start={startTime}
             end={endTime}
             onChange={this.onChangeDateRange}
-            max="2015-04-21"
+            max="2015-04-22"
             min="2015-02-21"
             resolution="days"
             />

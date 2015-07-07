@@ -36,11 +36,11 @@ class DateRangePicker extends React.Component {
       return;
     }
 
-    this.props.onChange({
-      start: this.state.selectionStart.format('YYYY-MM-DD'),
-      end: date.format('YYYY-MM-DD')
-    });
+    const swap = this.state.selectionStart.isAfter(date);
+    const start = swap ? date : this.state.selectionStart;
+    const end = swap ? this.state.selectionStart : date;
 
+    this.props.onChange({ start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') });
     this.setState({ selectionStart: null, selectionEnd: null });
   }
 
@@ -53,7 +53,7 @@ class DateRangePicker extends React.Component {
     const num = mend.diff(mstart, resolution);
     const numAvailable = mmax.diff(mmin, resolution);
     const dates = array(num).map((we, i) => mstart.clone().add(i, resolution));
-    const available = array(numAvailable).map((we, i) => mmin.clone().add(i, resolution));
+    const available = array(numAvailable + 1).map((we, i) => mmin.clone().add(i, resolution));
     this.setState({ dates, available });
   }
 
@@ -62,7 +62,14 @@ class DateRangePicker extends React.Component {
       return <div className="date-range-picker" />;
     }
 
-    const { available, selectionStart, selectionEnd } = this.state;
+    let { available, selectionStart, selectionEnd } = this.state;
+
+    if (selectionStart && selectionEnd && selectionStart.isAfter(selectionEnd)) {
+      let temp = selectionStart;
+      selectionStart = selectionEnd;
+      selectionEnd = temp;
+    }
+
     const { start, end } = this.props;
     const days = available.map(renderDay.bind(this, 'day', 'DD'));
     const weekdays = available.map(renderDay.bind(this, 'weekday', 'dd'));
