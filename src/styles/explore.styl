@@ -40,13 +40,12 @@
     margin 2rem 0
     display flex
     justify-content flex-start
-    .dimensions-container
+
+    .data-dimension-container
       margin-right 1rem
-    .dimensions-container:last-child
-      margin-right 0
-    .select-container
-      display flex
-      justify-content space-between
+      display inline-flex
+      font-size .8rem
+      line-height 1.6
       &:before
         content ''
         border-radius 50%
@@ -54,22 +53,31 @@
         width 1rem
         height 1rem
         margin-right .5rem
+      &:nth-child(1):before
+        background colors-dimension1
+      &:nth-child(2):before
+        background colors-dimension2
+      &:nth-child(3):before
+        background colors-dimension3
+      &:last-child
+        margin-right 0
+
+    .data-dimension-select-container
+      display flex
+      justify-content space-between
       select
         font-size 1rem
 
-    .dimensions-container:nth-child(1) .select-container:before
-      background colors-dimension1
-    .dimensions-container:nth-child(2) .select-container:before
-      background colors-dimension2
-    .dimensions-container:nth-child(3) .select-container:before
-      background colors-dimension3
-
-    .mini-stats
-      margin-left 1.5rem
-      font-size .8rem
-      margin-top .5rem
-      line-height 1.6
+    .data-dimension-stats
+      margin-top .25rem
       color #999
       strong
         font-weight normal
         color black
+
+    .data-dimension-filter
+      margin-top .5rem
+      label
+        margin-right 1rem
+      label:last-child
+        margin-right 0

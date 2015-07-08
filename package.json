@@ -28,6 +28,7 @@
     "react-chartjs": "^0.6.0",
     "react-datepicker": "^0.8.0",
     "react-document-title": "^1.0.2",
+    "react-radio-group": "^2.0.2",
     "react-router": "^0.13.3",
     "react-select": "^0.5.2"
   }
