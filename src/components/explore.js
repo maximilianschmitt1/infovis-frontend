@@ -3,6 +3,7 @@
 const React = require('react');
 const debounce = require('debounce');
 const moment = require('moment');
+const assign = require('object.assign');
 const counts = require('../stores/counts');
 const actions = require('../data/data-dimensions.json').sort();
 const GripsChart = require('./grips-chart');
@@ -43,7 +44,7 @@ class Explore extends React.Component {
   onChangeFilter(i, value) {
     const filters = this.state.filters;
     filters[i] = value;
-    this.setState({ filters });
+    this.setState({ filters, loading: true }, this.fetchCounts);
   }
 
   onZoom(num) {
@@ -57,7 +58,15 @@ class Explore extends React.Component {
     opts.resolution = moment(this.state.endTime).diff(this.state.startTime, 'days') > 0 ? 'days' : 'hours';
 
     return Promise
-      .all(this.state.dimensions.map(dimension => dimension !== 'none' && counts.get(dimension, opts)))
+      .all(this.state.dimensions.map((dimension, i) => {
+        if (dimension === 'none') {
+          return null;
+        }
+
+        const filter = this.state.filters[i];
+
+        return counts.get(dimension, assign({ filter }, opts));
+      }))
       .then(counts => this.setState({ loading: false, counts }))
       .catch(handleError);
 

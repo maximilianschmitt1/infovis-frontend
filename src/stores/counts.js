@@ -5,10 +5,10 @@ const apiUrl = require('../config').apiUrl;
 
 const counts = {
   get(dimension, opts) {
-    const { startTime, endTime, resolution } = opts;
+    const { startTime, endTime, resolution, filter } = opts;
 
     return axios
-      .get(apiUrl + `/count/${dimension}/between/${startTime}/${endTime}?resolution=${resolution}`)
+      .get(apiUrl + `/count/${dimension}/between/${startTime}/${endTime}?resolution=${resolution}&filter=${filter}`)
       .then(parse);
 
     function parse(res) {
