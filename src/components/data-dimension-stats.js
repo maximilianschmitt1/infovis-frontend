@@ -21,6 +21,7 @@ class DataDimensionStats extends React.Component {
       <div className="data-dimension-stats">
         <p>
           <strong>{formatNumber(total)}</strong> over <strong>{num} {units}</strong>,
+          &nbsp;
           <strong>~{formatNumber(average)}</strong> / <strong>{unit}</strong>
         </p>
       </div>

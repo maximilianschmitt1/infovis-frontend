@@ -48,7 +48,8 @@ function b(args) {
   args.debug = true;
 
   return browserify('./src/main', args)
-    .transform('babelify');
+    .transform('babelify')
+    .transform('envify');
 }
 
 function bundle(b) {

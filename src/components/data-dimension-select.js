@@ -6,6 +6,12 @@ class DataDimensionSelect extends React.Component {
   constructor() {
     super();
     this.onChange = this.onChange.bind(this);
+    this.state = { options: null };
+  }
+
+  componentDidMount() {
+    this.setState({ options: this.props.options.map((option, i) => <option key={i} value={option.value}>{option.label}</option>) });
+    this.forceUpdate();
   }
 
   shouldComponentUpdate(nextProps) {
@@ -19,7 +25,7 @@ class DataDimensionSelect extends React.Component {
 
   render() {
     const selected = this.props.selected;
-    const options = this.props.options.map((option, i) => <option key={i} value={option.value}>{option.label}</option>);
+    const options = this.state.options;
 
     return (
       <div className="data-dimension-select-container">
