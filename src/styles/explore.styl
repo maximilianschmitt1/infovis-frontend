@@ -7,9 +7,6 @@
     h1
       margin 0
       padding 0
-  canvas
-    width 100% !important
-    height 20rem !important
 
   .date-range
     margin-top 2rem
@@ -18,8 +15,8 @@
       margin-right 1rem
 
   .chart-container
-    position relative
     height 20rem
+    position relative
 
   .loading-indicator
     position absolute
@@ -39,12 +36,16 @@
   .data-dimensions
     margin 2rem 0
     display flex
-    justify-content flex-start
+    justify-content stretch
 
     .data-dimension-container
-      margin-right 1rem
-      display inline-flex
-      font-size .8rem
+      margin-right 2rem
+      width 100%
+      display flex
+      justify-content stretch
+      div
+        width 100%
+      font-size 1rem
       line-height 1.6
       &:before
         content ''
@@ -63,19 +64,23 @@
         margin-right 0
 
     .data-dimension-select-container
-      display flex
-      justify-content space-between
+      width 100%
+      line-height 0
       select
+        width 100%
         font-size 1rem
 
     .data-dimension-stats
-      margin-top .25rem
+      margin-top .5rem
+      border-top 1px solid #efefef
+      padding-top .5rem
       color #999
       strong
         font-weight normal
         color black
 
     .data-dimension-filter
+      font-size .7rem
       margin-top .5rem
       label
         margin-right 1rem

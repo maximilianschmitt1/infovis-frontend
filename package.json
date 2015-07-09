@@ -26,6 +26,8 @@
     "new-array": "^1.0.0",
     "normalize.css": "^3.0.3",
     "object.assign": "^3.0.1",
+    "randomcolor": "^0.3.0",
+    "rc-menu": "^3.4.0",
     "react": "^0.13.3",
     "react-chartjs": "^0.6.0",
     "react-datepicker": "^0.8.0",

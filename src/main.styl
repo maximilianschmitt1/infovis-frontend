@@ -1,8 +1,14 @@
 @import '../node_modules/normalize.css/normalize.css'
+@import '../node_modules/rc-menu/assets/index.css'
 @import 'styles/variables'
 @import 'styles/dashboard'
 @import 'styles/explore'
 @import 'styles/date-range-picker'
+
+.rc-menu
+  max-height 10rem
+  overflow-y auto
+  overflow-x overflow
 
 *
   margin 0
@@ -17,12 +23,13 @@ body
   font-family 'Helvetica Neue', Helvetica, sans-serif, Arial
   font-weight 400
   color text-color
+  padding-bottom 4rem
 
 .app-header
   display flex
   justify-content space-between
   align-items center
-  padding 1rem
+  padding 1.5rem 2rem
 
   nav a
     margin-right 1.5rem
@@ -40,7 +47,7 @@ a
   color link-color
 
 .app-body
-  padding 1rem
+  padding 0 2rem
   text-align left
 
 h1, h2, h3, h4, h5, h6

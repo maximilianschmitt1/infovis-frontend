@@ -72,7 +72,7 @@ class GripsChart extends React.Component {
         ref="chart"
         redraw
         data={{ datasets, labels }}
-        options={{ animation: false, multiTooltipTemplate: '<%= datasetLabel %>: <%= value %>' }}
+        options={{ maintainAspectRatio: false, responsive: true, animation: false, multiTooltipTemplate: '<%= datasetLabel %>: <%= value %>' }}
         />
     );
 

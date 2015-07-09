@@ -5,19 +5,11 @@ const debounce = require('debounce');
 const moment = require('moment');
 const assign = require('object.assign');
 const counts = require('../stores/counts');
-const actions = require('../data/data-dimensions.json').sort();
 const GripsChart = require('./grips-chart');
 const DateRangePicker = require('./date-range-picker');
 const DataDimensionSelect = require('./data-dimension-select');
 const DataDimensionFilter = require('./data-dimension-filter');
 const DataDimensionStats = require('./data-dimension-stats');
-
-const dataDimensionOptions = [
-  { value: 'none', label: '-' },
-  { value: 'hits', label: 'Hits' },
-  { value: 'uniques', label: 'Uniques' }
-].concat(actions.map(action => { return { value: action, label: action }; }));
-const dataDimensionOptionsNotNullable = dataDimensionOptions.slice(1);
 
 class Explore extends React.Component {
   constructor() {
@@ -91,12 +83,11 @@ class Explore extends React.Component {
 
     const selects = dimensions.map((dimension, i) => {
       const filter = filters[i];
-      const options = i === 0 ? dataDimensionOptionsNotNullable : dataDimensionOptions;
 
       return (
         <div key={i} className="data-dimension-container">
           <div>
-            <DataDimensionSelect selected={dimension} options={options} onChange={this.onChangeDimension.bind(this, i)} />
+            <DataDimensionSelect selected={dimension} nullable={i === 0} onChange={this.onChangeDimension.bind(this, i)} />
             <DataDimensionFilter selected={filter} onChange={this.onChangeFilter.bind(this, i)} />
             <DataDimensionStats loading={loading} counts={counts && counts[i] ? counts[i].data : null} resolution={resolution} dimension={dimension} />
           </div>

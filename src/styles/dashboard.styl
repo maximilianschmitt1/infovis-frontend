@@ -1,4 +1,6 @@
 .dashboard
+  padding-top 2rem
+
   h2
     margin-top 4rem
     margin-bottom 2rem
@@ -13,23 +15,51 @@
       .value
         font-size 2rem
 
-  .faculties
-    .faculty
-      margin-top 2rem
-    .faculty:first-child
-      margin-top 0
-    .data-points
-      margin-top .25rem
-      opacity .4
-    .data-point
-      display inline-block
-      margin-right 1rem
-      .value
-        display inline
-        font-weight bold
-        margin-right .5rem
-      .description
-        display inline
-
     .data-point:last-child
       margin-right 0
+
+  .top-10-actions, .users
+    display flex
+    justify-content space-between
+    > *
+      margin-right 4rem
+      &:last-child
+        margin-right 0
+    .table
+      flex 1 0
+    .chart canvas
+      width 20rem
+      height 20rem
+    .table table
+      tr
+        border-bottom 1px solid #efefef
+        &:last-child
+          border-bottom 0
+      td
+        padding .5rem 0
+      width 100%
+      .value
+        text-align right
+      .label span
+        vertical-align middle
+      .color-legend
+        border 3px solid rgba(0, 0, 0, .25)
+        content ''
+        display inline-block
+        width 1rem
+        height 1rem
+        margin-right .5rem
+        vertical-align middle
+        line-height 0
+        border-radius 50%
+    .table table.with-bars
+      tr
+        border-bottom 0
+      tr.percentage-bar
+        border-bottom 2px solid white
+        &:last-child
+          border-bottom 0
+        td
+          padding 0
+        .bar
+          height .5rem

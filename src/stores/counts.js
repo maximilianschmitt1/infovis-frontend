@@ -12,10 +12,7 @@ const counts = {
       .then(parse);
 
     function parse(res) {
-      return {
-        dimension,
-        data: res.data
-      };
+      return { dimension, data: res.data };
     }
   }
 };
