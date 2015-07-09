@@ -2,9 +2,9 @@
 
 const vars = {
   colors: {
-    dimension1: 'rgba(102, 160, 237, 1)',
-    dimension2: '#B6ED66',
-    dimension3: '#ED8A66'
+    dimension1: '#80a4ed',
+    dimension2: '#f9e486',
+    dimension3: '#ed8eb8'
   }
 };
 

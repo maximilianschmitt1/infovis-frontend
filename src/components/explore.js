@@ -4,6 +4,8 @@ const React = require('react');
 const debounce = require('debounce');
 const moment = require('moment');
 const assign = require('object.assign');
+const array = require('new-array');
+const randomColor = require('randomcolor');
 const counts = require('../stores/counts');
 const GripsChart = require('./grips-chart');
 const DateRangePicker = require('./date-range-picker');
@@ -20,7 +22,9 @@ class Explore extends React.Component {
       startTime: '2015-03-01',
       endTime: '2015-03-15',
       dimensions: ['hits', 'none', 'none'],
-      filters: ['none', 'none', 'none']
+      filters: ['none', 'none', 'none'],
+      //colors: array(3).map(randomColor.bind(null, { luminosity: 'light' }))
+      colors: ['#80a4ed', '#FFE39B', '#ed8eb8']
     };
 
     this.onChangeDateRange = this.onChangeDateRange.bind(this);
@@ -78,14 +82,16 @@ class Explore extends React.Component {
   }
 
   render() {
-    const { startTime, endTime, dimensions, counts, loading, filters } = this.state;
+    const { startTime, endTime, dimensions, counts, loading, filters, colors } = this.state;
     const resolution = moment(endTime).diff(startTime, 'days') > 0 ? 'days' : 'hours';
 
     const selects = dimensions.map((dimension, i) => {
+      const color = colors[i];
       const filter = filters[i];
 
       return (
         <div key={i} className="data-dimension-container">
+          <div className="color-indicator" style={{ backgroundColor: color }} />
           <div>
             <DataDimensionSelect selected={dimension} nullable={i === 0} onChange={this.onChangeDimension.bind(this, i)} />
             <DataDimensionFilter selected={filter} onChange={this.onChangeFilter.bind(this, i)} />
@@ -97,10 +103,6 @@ class Explore extends React.Component {
 
     return (
       <div className="explore">
-        <nav className="data-dimensions toolbar">
-          {selects}
-        </nav>
-
         <div className="chart-container">
           {loading ? <div className="loading-indicator" /> : null}
           <GripsChart
@@ -108,19 +110,28 @@ class Explore extends React.Component {
             startTime={startTime}
             endTime={endTime}
             dimensions={counts}
+            colors={colors}
             resolution={resolution}
             />
         </div>
+
+        <h2>Date range</h2>
 
         <nav className="date-range">
           <DateRangePicker
             start={startTime}
             end={endTime}
             onChange={this.onChangeDateRange}
-            max="2015-04-22"
+            max="2015-04-21"
             min="2015-02-21"
             resolution="days"
             />
+        </nav>
+
+        <h2>Data dimensions and filters</h2>
+
+        <nav className="data-dimensions toolbar">
+          {selects}
         </nav>
       </div>
     );

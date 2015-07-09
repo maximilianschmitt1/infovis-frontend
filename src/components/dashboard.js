@@ -29,6 +29,14 @@ const users = [
   return user;
 });
 
+const days = [
+  { label: 'April 14th 2015', value: 191911 },
+  { label: 'Average hits per day', value: 61322 }
+].map(day => {
+  day.color = randomColor({});
+  return day;
+});
+
 class Dashboard extends React.Component {
   constructor() {
     super();
@@ -83,7 +91,7 @@ class Dashboard extends React.Component {
           {dataPoints}
         </section>
         <h2>Users</h2>
-        <section className="top-10-actions">
+        <section className="users">
           <div className="table">
             <table className="with-bars">
               {dataRow(users[0])}
@@ -102,6 +110,17 @@ class Dashboard extends React.Component {
           </div>
           <div className="chart">
             <Chart data={top10Actions} options={{ responsive: true, animation: false }} />
+          </div>
+        </section>
+        <h2>Busiest day (hits)</h2>
+        <section className="busiest-day">
+          <div className="table">
+            <table className="with-bars">
+              {dataRow(days[0])}
+              {percentageBar(days, days[0])}
+              {percentageBar(days, days[1])}
+              {dataRow(days[1])}
+            </table>
           </div>
         </section>
       </div>

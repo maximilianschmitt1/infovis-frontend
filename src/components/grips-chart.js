@@ -6,7 +6,7 @@ const moment = require('moment');
 const array = require('new-array');
 const equal = require('deep-equal');
 const color = require('color');
-const colors = require('../vars').colors;
+let colors = [];
 
 class GripsChart extends React.Component {
   componentDidUpdate() {
@@ -59,6 +59,7 @@ class GripsChart extends React.Component {
 
   render() {
     const { startTime, endTime, resolution, dimensions } = this.props;
+    colors = this.props.colors;
 
     if (!dimensions) {
       return null;
@@ -72,7 +73,7 @@ class GripsChart extends React.Component {
         ref="chart"
         redraw
         data={{ datasets, labels }}
-        options={{ maintainAspectRatio: false, responsive: true, animation: false, multiTooltipTemplate: '<%= datasetLabel %>: <%= value %>' }}
+        options={{ scaleFontSize: 16, maintainAspectRatio: false, responsive: true, animation: false, multiTooltipTemplate: '<%= datasetLabel %>: <%= value %>' }}
         />
     );
 
@@ -84,12 +85,13 @@ function dataset(dimension, i) {
     return null;
   }
 
-  const baseColor = colors['dimension' + (i + 1)];
+  const baseColor = colors[i];
 
   return {
     data: dimension.data.map(dp => dp[dimension.dimension]),
     label: dimension.dimension,
-    fillColor: color(baseColor).clearer(.75).rgbString(),
+    //fillColor: color(baseColor).clearer(.75).rgbString(),
+    fillColor: 'rgba(255, 255, 255, 0)',
     pointColor: baseColor,
     strokeColor: baseColor,
     pointStrokeColor: baseColor,
