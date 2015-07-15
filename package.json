@@ -11,6 +11,7 @@
     "gulp-jade": "^1.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-stylus": "^2.0.5",
+    "rupture": "^0.6.1",
     "stylus-vars": "0.0.3",
     "watchify": "^3.2.3"
   },

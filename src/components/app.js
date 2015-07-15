@@ -11,7 +11,9 @@ class App extends React.Component {
       <div>
         <header className="app-header">
           <div className="app-name">
-            <h1>GRIPS Analytics</h1>
+            <h1>
+              <Link to="dashboard">GRIPS Analytics</Link>
+            </h1>
           </div>
           <nav>
             <Link to="dashboard">Dashboard</Link>
