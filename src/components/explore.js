@@ -91,9 +91,8 @@ class Explore extends React.Component {
 
       return (
         <div key={i} className="data-dimension-container">
-          <div className="color-indicator" style={{ backgroundColor: color }} />
           <div>
-            <DataDimensionSelect selected={dimension} nullable={i === 0} onChange={this.onChangeDimension.bind(this, i)} />
+            <DataDimensionSelect highlightColor={color} selected={dimension} nullable={i === 0} onChange={this.onChangeDimension.bind(this, i)} />
             <DataDimensionFilter selected={filter} onChange={this.onChangeFilter.bind(this, i)} />
             <DataDimensionStats loading={loading} counts={counts && counts[i] ? counts[i].data : null} resolution={resolution} dimension={dimension} />
           </div>
@@ -115,8 +114,6 @@ class Explore extends React.Component {
             />
         </div>
 
-        <h2>Date range</h2>
-
         <nav className="date-range">
           <DateRangePicker
             start={startTime}
@@ -127,8 +124,6 @@ class Explore extends React.Component {
             resolution="days"
             />
         </nav>
-
-        <h2>Data dimensions and filters</h2>
 
         <nav className="data-dimensions toolbar">
           {selects}

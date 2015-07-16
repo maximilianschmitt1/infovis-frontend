@@ -1,15 +1,32 @@
 'use strict';
 
 const React = require('react');
+const SuperMenu = require('./super-menu');
 
 const actions = require('../data/data-dimensions.json')
   .sort()
-  .map(action => { return { value: action, label: action }; });
+  .reduce((accu, item) => {
+    const [context, action] = item.split(':');
+    let latest = accu[accu.length - 1];
+
+    if (!accu.length || latest.name !== context) {
+      accu.push({ name: context, value: context, children: [] });
+      latest = accu[accu.length - 1];
+    }
+
+
+    if (latest.name === context) {
+      latest.children.push({ name: action, value: item });
+    }
+
+    return accu;
+  }, []);
+  //.map(action => { return { value: action, name: action }; });
 
 const dimensions = [
-  { value: 'none', label: '-' },
-  { value: 'hits', label: 'Hits' },
-  { value: 'uniques', label: 'Uniques' }
+  { value: 'none', name: '-' },
+  { value: 'hits', name: 'Hits' },
+  { value: 'uniques', name: 'Uniques' }
 ];
 
 class DataDimensionSelect extends React.Component {
@@ -29,20 +46,17 @@ class DataDimensionSelect extends React.Component {
     return nextProps.selected !== this.props.selected;
   }
 
-  onChange(e) {
-    const value = e.target.value;
-    this.props.onChange(value);
+  onChange(opt) {
+    this.props.onChange(opt.value);
   }
 
   render() {
     const selected = this.props.selected;
-    const options = this.state.options;
+    const options = (!this.props.nullable ? dimensions : dimensions.slice(1)).concat(actions);
 
     return (
       <div className="data-dimension-select-container">
-        <select onChange={this.onChange} value={selected}>
-          {options}
-        </select>
+        <SuperMenu highlightColor={this.props.highlightColor} options={options} onChange={this.onChange} selected={selected} />
       </div>
     );
   }
