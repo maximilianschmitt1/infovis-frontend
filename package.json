@@ -23,7 +23,6 @@
     "debounce": "^1.0.0",
     "deep-equal": "^1.0.0",
     "format-number": "^1.0.2",
-    "jquery": "^2.1.4",
     "moment": "^2.10.3",
     "new-array": "^1.0.0",
     "normalize.css": "^3.0.3",
