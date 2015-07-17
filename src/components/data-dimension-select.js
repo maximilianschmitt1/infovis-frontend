@@ -26,7 +26,8 @@ const actions = require('../data/data-dimensions.json')
 const dimensions = [
   { value: 'none', name: '-' },
   { value: 'hits', name: 'Hits' },
-  { value: 'uniques', name: 'Uniques' }
+  { value: 'uniques', name: 'Uniques' },
+  { value: 'actions', name: 'Actions', children: actions }
 ];
 
 class DataDimensionSelect extends React.Component {
@@ -34,12 +35,6 @@ class DataDimensionSelect extends React.Component {
     super();
     this.onChange = this.onChange.bind(this);
     this.state = { options: null };
-  }
-
-  componentDidMount() {
-    const options = (!this.props.nullable ? dimensions : dimensions.slice(1)).concat(actions);
-    this.setState({ options: options.map((option, i) => <option key={i} value={option.value}>{option.label}</option>) });
-    this.forceUpdate();
   }
 
   shouldComponentUpdate(nextProps) {
@@ -52,7 +47,7 @@ class DataDimensionSelect extends React.Component {
 
   render() {
     const selected = this.props.selected;
-    const options = (!this.props.nullable ? dimensions : dimensions.slice(1)).concat(actions);
+    const options = (!this.props.nullable ? dimensions : dimensions.slice(1));
 
     return (
       <div className="data-dimension-select-container">

@@ -37,11 +37,17 @@ gulp.task('watchify', function() {
   bundle(w);
 });
 
+gulp.task('browserify', function() {
+  return bundle(b());
+});
+
 gulp.task('default', ['templates', 'styles', 'watchify', 'images'], function() {
   gulp.watch('src/**/*.jade', ['templates']);
   gulp.watch('src/images/**/*', ['images']);
   gulp.watch('src/**/*.styl', ['styles']);
 });
+
+gulp.task('build', ['templates', 'styles', 'browserify', 'images']);
 
 function b(args) {
   args = args || {};
@@ -53,5 +59,5 @@ function b(args) {
 }
 
 function bundle(b) {
-  b.bundle().pipe(fs.createWriteStream('dist/app.js'));
+  return b.bundle().pipe(fs.createWriteStream('dist/app.js'));
 }

@@ -7,7 +7,6 @@ class SuperMenu extends React.Component {
   constructor() {
     super();
     this.select = this.select.bind(this);
-    this.goToRoot = this.goToRoot.bind(this);
     this.state = { options: [], optsMap: {} };
   }
 
@@ -20,7 +19,8 @@ class SuperMenu extends React.Component {
       if (opt.children) {
         const parent = {
           name: opt.name,
-          value: opt.value
+          value: opt.value,
+          parent: opt.parent
         };
 
         parent.children = opt.children.map(child => mapParents(assign({ parent }, child)));
@@ -44,11 +44,8 @@ class SuperMenu extends React.Component {
     this.setState({ options: withParents, optsMap });
   }
 
-  goToRoot() {
-    this.setState({ showing: null });
-  }
-
   goTo(opt) {
+    this.refs.itemList.getDOMNode().scrollTop = 0;
     this.setState({ showing: opt });
   }
 
@@ -90,7 +87,7 @@ class SuperMenu extends React.Component {
         return <a className={classes.join(' ')} key={opt.value} onClick={this.goTo.bind(this, opt)}>{opt.name}</a>;
       });
 
-      crumbs.unshift(<a className={!this.state.showing ? 'showing' : ''} key="root" onClick={this.goToRoot}>/</a>);
+      crumbs.unshift(<a className={!this.state.showing ? 'showing' : ''} key="root" onClick={this.goTo.bind(this, null)}>/</a>);
       crumbs.unshift('Selected: ');
 
       return (
@@ -104,7 +101,7 @@ class SuperMenu extends React.Component {
     return (
       <div className="super-menu">
         {breadcrumbs}
-        <ul>
+        <ul ref="itemList">
           {items.map(renderOpt.bind(this))}
         </ul>
       </div>
